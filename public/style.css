@@ -1,0 +1,73 @@
+body {
+  padding: 0%;
+  margin: 0%;
+  background-color:rgb(103, 103, 103);
+}
+
+.nav-bar {
+  position: fixed;
+  height: 55px;
+  width: 100%;
+  display: flex;
+  background-color: rgb(42, 42, 42);
+  align-items: center;
+}
+
+.btn-grp button {
+  border-width: 0px;
+  width: 20%;
+  min-width: fit-content;
+  background-color: rgb(80, 79, 79);
+  color: whitesmoke;
+}
+
+button:hover {
+  background-color: rgb(41, 35, 35);
+  color: orange;
+}
+
+.active {
+  background-color: rgb(41, 35, 35);
+  color: orange;
+}
+
+.btn-center {
+  margin: auto;
+  width: 50%;
+}
+
+.btn-left{
+  background-color: rgb(80, 79, 79);
+  color:whitesmoke;
+  border-width: 0px;
+  height:25px;
+  width:7%;
+  min-width: fit-content;
+  margin: 5px; 
+}
+
+.btn-center button{
+  height:25px;
+  width: 20%;
+}
+
+.list-container{
+  padding-top: 60px;
+  display:flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  align-items:center;
+}
+.card-items{
+  text-align: center;
+  font-size: larger;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.507);
+  background-color: rgb(83, 81, 78);
+  width: 80%;
+  padding: 1%;
+  margin-top: 2%;
+  color: rgb(240, 240, 240); 
+}
+.right{
+  float: right;
+}
