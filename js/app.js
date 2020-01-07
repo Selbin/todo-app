@@ -31,6 +31,7 @@ addList.addEventListener('click', event => {
         })
       )
     )
+    
     return
   }
   alert("List name shoudn't be empty!!")
