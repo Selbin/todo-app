@@ -4,20 +4,177 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width = device-width, intial-scale=1" />
     <link rel="stylesheet" href="./css/style.css" />
+    <link rel="stylesheet" href="./css/normalize.css" />
     <script src="https://kit.fontawesome.com/d087d09bf3.js" crossorigin="anonymous"></script>
     <title>Todo App</title>
   </head>
 
   <body>
-    <div class="nav-bar" id="nav-bar">
-      <button class="btn-left" id="add-list">Add List</button>
-      <div class="btn-center btn-grp" id="btn-grp">
-        <button>List</button>
-        <button>Today</button>
-        <button>Scheduled</button>
-      </div>
+    <div id="navbar">
+        <div class="nav-item">
+            <button class="btn" id="add-list">Add List</button>
+        </div>
+        <div class="nav-item">
+            <button class="btn">List</button>
+            <button class="btn">Today</button>
+            <button class="btn">Scheduled</button>
+        </div>
+        <div class="nav-item"></div>
     </div>
-    <div class="list-container"></div>
+    <div id="app-main-container">
+        <!-- <div id="lc1" class="list-container">
+            <div class="list-header">
+                <h3>List Name</h3>
+                <div class="list-operations">
+                    <i class="far fa-edit"></i>
+                    <i class="fas fa-trash-alt"></i>
+                </div>
+            </div>
+            <div class="list-todos">
+                <div id="todo1" class="todo">
+                    <div>
+                        <input type="text" placeholder="Add new todo">
+                    </div>
+                    <div class="todo-container">
+                        <div>
+                            <input type="checkbox" name="todo-complete">
+                        </div>
+                        <div>
+                            <span>Buy washing powder</span>
+                        </div>
+                        <div class="todo-operations">
+                            <i class="far fa-edit"></i>
+                            <i class="far fa-calendar-alt"></i>
+                            <i class="far fa-flag"></i>
+                            <i class="far fa-edit"></i>
+                            <i class="fas fa-trash-alt"></i>
+                        </div>
+                    </div>  
+                    <div class="todo-container">
+                        <div>
+                            <input type="checkbox" name="todo-complete">
+                        </div>
+                        <div>
+                            <span>Buy washing powder</span>
+                        </div>
+                        <div class="todo-operations">
+                            <i class="far fa-edit"></i>
+                            <i class="far fa-calendar-alt"></i>
+                            <i class="far fa-flag"></i>
+                            <i class="far fa-edit"></i>
+                            <i class="fas fa-trash-alt"></i>
+                        </div>
+                    </div>  
+                    <div class="todo-container">
+                        <div>
+                            <input type="checkbox" name="todo-complete">
+                        </div>
+                        <div>
+                            <span>Buy washing powder</span>
+                        </div>
+                        <div class="todo-operations">
+                            <i class="far fa-edit"></i>
+                            <i class="far fa-calendar-alt"></i>
+                            <i class="far fa-flag"></i>
+                            <i class="far fa-edit"></i>
+                            <i class="fas fa-trash-alt"></i>
+                        </div>
+                    </div>  
+                    <div class="todo-container">
+                        <div>
+                            <input type="checkbox" name="todo-complete">
+                        </div>
+                        <div>
+                            <span>Buy washing powder</span>
+                        </div>
+                        <div class="todo-operations">
+                            <i class="far fa-edit"></i>
+                            <i class="far fa-calendar-alt"></i>
+                            <i class="far fa-flag"></i>
+                            <i class="far fa-edit"></i>
+                            <i class="fas fa-trash-alt"></i>
+                        </div>
+                    </div>  
+                </div>
+            </div>
+        </div>
+        <div id="lc1" class="list-container">
+            <div class="list-header">
+                <h3>List Name</h3>
+                <div class="list-operations">
+                    <i class="far fa-edit"></i>
+                    <i class="fas fa-trash-alt"></i>
+                </div>
+            </div>
+            <div class="list-todos">
+                <div id="todo1" class="todo">
+                    <div>
+                        <input type="text" placeholder="Add new todo">
+                    </div>
+                    <div class="todo-container">
+                        <div>
+                            <input type="checkbox" name="todo-complete">
+                        </div>
+                        <div>
+                            <span>Buy washing powder</span>
+                        </div>
+                        <div class="todo-operations">
+                            <i class="far fa-edit"></i>
+                            <i class="far fa-calendar-alt"></i>
+                            <i class="far fa-flag"></i>
+                            <i class="far fa-edit"></i>
+                            <i class="fas fa-trash-alt"></i>
+                        </div>
+                    </div>  
+                    <div class="todo-container">
+                        <div>
+                            <input type="checkbox" name="todo-complete">
+                        </div>
+                        <div>
+                            <span>Buy washing powder</span>
+                        </div>
+                        <div class="todo-operations">
+                            <i class="far fa-edit"></i>
+                            <i class="far fa-calendar-alt"></i>
+                            <i class="far fa-flag"></i>
+                            <i class="far fa-edit"></i>
+                            <i class="fas fa-trash-alt"></i>
+                        </div>
+                    </div>  
+                    <div class="todo-container">
+                        <div>
+                            <input type="checkbox" name="todo-complete">
+                        </div>
+                        <div>
+                            <span>Buy washing powder</span>
+                        </div>
+                        <div class="todo-operations">
+                            <i class="far fa-edit"></i>
+                            <i class="far fa-calendar-alt"></i>
+                            <i class="far fa-flag"></i>
+                            <i class="far fa-edit"></i>
+                            <i class="fas fa-trash-alt"></i>
+                        </div>
+                    </div>  
+                    <div class="todo-container">
+                        <div>
+                            <input type="checkbox" name="todo-complete">
+                        </div>
+                        <div>
+                            <span>Buy washing powder</span>
+                        </div>
+                        <div class="todo-operations">
+                            <i class="far fa-edit"></i>
+                            <i class="far fa-calendar-alt"></i>
+                            <i class="far fa-flag"></i>
+                            <i class="far fa-edit"></i>
+                            <i class="fas fa-trash-alt"></i>
+                        </div>
+                    </div>  
+                </div>
+            </div>
+        </div> -->
+    </div>
   </body>
 
   <script src="./js/app.js"></script>
