@@ -10,9 +10,37 @@ function showAllList () {
     renderList(JSON.parse(localStorage.getItem(listId)))
   }
 }
+// complete notes first
+function textinput (event) {
+  console.log(event.target.parentNode.parentNode.parentNode)
+  const list = JSON.parse(localStorage.getItem(event.target.parentNode.parentNode.parentNode.id.slice(4)))
+  const tasks = list.todo
+  for (const task of tasks) {
+    console.log(task.id, event.target.id.slice(2))
+    if (task.id === Number(event.target.id.slice(2))) {
+      task.note = event.target.value
+      console.log(task)
+    }
+  }
+  list.todo = tasks
+  console.log(list)
+  localStorage.setItem(event.target.parentNode.parentNode.parentNode.id.slice(4), JSON.stringify(list))
+}
 
-function showNote(){
-
+function showNote(event) {
+  //show note id issue
+  if (event.target.parentNode.querySelector('textarea').style.display === 'none') {
+    console.log(event.target.parentNode.parentNode.parentNode)
+    const tasks = JSON.parse(localStorage.getItem(event.target.parentNode.parentNode.parentNode.id.slice(4))).todo
+    for (const task of tasks) {
+      if (task.id === Number(event.target.id.slice(2))) {
+        event.target.parentNode.querySelector('textarea').value = task.note
+      }
+    }
+    event.target.parentNode.querySelector('textarea').style.display = 'block'
+  } else {
+    event.target.parentNode.querySelector('textarea').style.display = 'none'
+  }
 }
 
 function rendertodo (id, todo, lastId) {
@@ -44,7 +72,8 @@ function rendertodo (id, todo, lastId) {
           onclick: showNote
         }),
         createElement('textarea', {
-          id: `no${lastId}`
+          id: `no${lastId}`,
+          onchange: textinput
         }),
         createElement('i', {
           id: `ed${lastId}`,
@@ -80,9 +109,10 @@ function addtodo (event) {
       lastId = 1
     } else {
       lastId = todo[todo.length - 1].id + 1
+      console.log(lastId)
     }
     const newTodo = {
-      id: 1,
+      id: lastId,
       name: event.target.value,
       scheduled: false,
       priority: 0,
@@ -105,7 +135,6 @@ function showTask (event) {
   if (document.getElementById(`todo${id}`) !== null) {
     document.getElementById(`todo${id}`).remove()
   } else {
-    console.log(todoContainer)
     todoContainer.appendChild(
       createElement(
         'div',
@@ -128,7 +157,7 @@ function showTask (event) {
     )
     const todos = JSON.parse(localStorage.getItem(id)).todo
     for (const todo of todos) {
-      rendertodo(id, todo)
+      rendertodo(id, todo, todo.id)
     }
   }
 }

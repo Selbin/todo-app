@@ -75,6 +75,7 @@ textarea{
     position: absolute;
     right: 17.4%;
     z-index: 100;
+    display: none;
     color: whitesmoke;
     border: 1px solid #1a1c1d;
     border-radius: 5px;
