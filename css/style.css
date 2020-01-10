@@ -135,3 +135,15 @@ i{
     display: flex;
     justify-content: space-around;
 }
+
+.low {
+    color: whitesmoke;
+}
+
+.medium {
+    color: rgb(199, 130, 47);
+}
+
+.high {
+    color: red;
+}

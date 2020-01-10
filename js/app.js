@@ -10,10 +10,34 @@ function showAllList () {
     renderList(JSON.parse(localStorage.getItem(listId)))
   }
 }
-// complete notes first
+
+function deleteTask (event) {
+  const list = JSON.parse(
+    localStorage.getItem(
+      event.target.parentNode.parentNode.parentNode.id.slice(4)
+    )
+  )
+  const tasks = list.todo
+  for (const task of tasks) {
+    if (task.id === Number(event.target.id.slice(2))) {
+      tasks.splice(tasks.indexOf(task), 1)
+    }
+  }
+  list.todo = tasks
+  console.log(list)
+  localStorage.setItem(
+    event.target.parentNode.parentNode.parentNode.id.slice(4),
+    JSON.stringify(list)
+  )
+  event.target.parentNode.parentNode.remove()
+}
+
 function textinput (event) {
-  console.log(event.target.parentNode.parentNode.parentNode)
-  const list = JSON.parse(localStorage.getItem(event.target.parentNode.parentNode.parentNode.id.slice(4)))
+  const list = JSON.parse(
+    localStorage.getItem(
+      event.target.parentNode.parentNode.parentNode.id.slice(4)
+    )
+  )
   const tasks = list.todo
   for (const task of tasks) {
     console.log(task.id, event.target.id.slice(2))
@@ -24,14 +48,58 @@ function textinput (event) {
   }
   list.todo = tasks
   console.log(list)
-  localStorage.setItem(event.target.parentNode.parentNode.parentNode.id.slice(4), JSON.stringify(list))
+  localStorage.setItem(
+    event.target.parentNode.parentNode.parentNode.id.slice(4),
+    JSON.stringify(list)
+  )
+  event.target.style.display = 'none'
 }
 
-function showNote(event) {
+function editTask (event) {
+  console.log(event.target.parentNode.parentNode)
+  let taskName = prompt(
+    'Edit task',
+    event.target.parentNode.parentNode.querySelector('span').innerText
+  )
+  if (taskName === null) {
+    event.stopPropagation()
+    return
+  }
+  if (taskName !== '') {
+    event.target.parentNode.parentNode.querySelector(
+      'span'
+    ).innerText = taskName
+    const list = JSON.parse(
+      localStorage.getItem(
+        event.target.parentNode.parentNode.parentNode.id.slice(4)
+      )
+    )
+    const tasks = list.todo
+    for (const task of tasks) {
+      console.log(task.id, event.target.id.slice(2))
+      if (task.id === Number(event.target.id.slice(2))) {
+        task.name = taskName
+      }
+    }
+    list.todo = tasks
+    console.log(list)
+    localStorage.setItem(
+      event.target.parentNode.parentNode.parentNode.id.slice(4),
+      JSON.stringify(list)
+    )
+  }
+}
+
+function showNote (event) {
   //show note id issue
-  if (event.target.parentNode.querySelector('textarea').style.display === 'none') {
-    console.log(event.target.parentNode.parentNode.parentNode)
-    const tasks = JSON.parse(localStorage.getItem(event.target.parentNode.parentNode.parentNode.id.slice(4))).todo
+  if (
+    event.target.parentNode.querySelector('textarea').style.display === 'none'
+  ) {
+    const tasks = JSON.parse(
+      localStorage.getItem(
+        event.target.parentNode.parentNode.parentNode.id.slice(4)
+      )
+    ).todo
     for (const task of tasks) {
       if (task.id === Number(event.target.id.slice(2))) {
         event.target.parentNode.querySelector('textarea').value = task.note
@@ -43,11 +111,40 @@ function showNote(event) {
   }
 }
 
+function setPriority (event) {
+  if (event.target.value === 'low') {
+    event.target.parentNode.parentNode.style.color = 'whitesmoke'
+  }
+  if (event.target.value === 'medium') {
+    event.target.parentNode.parentNode.style.color = '#c7822f'
+  }
+  if (event.target.value === 'high') {
+    event.target.parentNode.parentNode.style.color = 'red'
+  }
+  const list = JSON.parse(
+    localStorage.getItem(
+      event.target.parentNode.parentNode.parentNode.id.slice(4)
+    )
+  )
+  const tasks = list.todo
+  for (const task of tasks) {
+    if (task.id === Number(event.target.id.slice(2))) {
+      task.priority = event.target.value
+    }
+  }
+  list.todo = tasks
+  console.log(list)
+  localStorage.setItem(
+    event.target.parentNode.parentNode.parentNode.id.slice(4),
+    JSON.stringify(list)
+  )
+}
+
 function rendertodo (id, todo, lastId) {
   document.getElementById('todo' + id).appendChild(
     createElement(
       'div',
-      { id: `toct${lastId}`, className: 'todo-container' },
+      { id: `toct${lastId}`, className: `todo-container ${todo.priority}` },
       createElement(
         'div',
         {},
@@ -78,23 +175,27 @@ function rendertodo (id, todo, lastId) {
         createElement('i', {
           id: `ed${lastId}`,
           className: 'far fa-edit',
-          onclick: editList
+          onclick: editTask
         }),
         createElement('i', {
           id: `ed${lastId}`,
-          className: 'far fa-flag',
-          onclick: editList
+          className: 'far fa-flag'
         }),
-        createElement('select', {
-          id: `ed${lastId}`,
-          className: 'dropdown'
-        },
-        createElement('option', {}, 'low'),
-        createElement('option', {}, 'medium'),
-        createElement('option', {}, 'high')),
+        createElement(
+          'select',
+          {
+            id: `ed${lastId}`,
+            className: 'dropdown',
+            onclick: setPriority
+          },
+          createElement('option', {}, 'low'),
+          createElement('option', {}, 'medium'),
+          createElement('option', {}, 'high')
+        ),
         createElement('i', {
           id: `ed${lastId}`,
-          className: 'fas fa-trash-alt'
+          className: 'fas fa-trash-alt',
+          onclick: deleteTask
         })
       )
     )
@@ -103,6 +204,7 @@ function rendertodo (id, todo, lastId) {
 
 function addtodo (event) {
   if (event.keyCode === 13) {
+    if (event.target.value === '') return
     let todo = JSON.parse(localStorage.getItem(event.target.id.slice(4))).todo
     let lastId
     if (todo.length === 0) {
