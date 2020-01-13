@@ -34,8 +34,10 @@ function deleteList (event) {
 
 // to edit list
 function editList (event) {
-  event.target.parentNode.parentNode.querySelector('input').className = 'list-input-edit-active'
-  event.target.parentNode.parentNode.querySelector('input').onclick = (event) => event.stopPropagation()
+  event.target.parentNode.parentNode.querySelector('input').className =
+    'list-input-edit-active'
+  event.target.parentNode.parentNode.querySelector('input').onclick = event =>
+    event.stopPropagation()
   event.target.parentNode.parentNode.querySelector('input').disabled = false
   event.stopPropagation()
 }
@@ -46,15 +48,10 @@ function updateList (event) {
     event.target.disabled = true
     event.target.className = 'list-input-edit'
     const list = JSON.parse(
-      window.localStorage.getItem(
-        event.target.id.slice(2)
-      )
+      window.localStorage.getItem(event.target.id.slice(2))
     )
     list.name = event.target.value
-    window.localStorage.setItem(
-      event.target.id.slice(2),
-      JSON.stringify(list)
-    )
+    window.localStorage.setItem(event.target.id.slice(2), JSON.stringify(list))
   }
 }
 // to render list
@@ -73,7 +70,14 @@ function renderList (list) {
           className: 'list-header',
           onclick: showTask
         },
-        createElement('input', { id: `hd${list.id}`, className: 'list-input-edit', type: 'text', disabled: 'disabled', value: list.name, onkeydown: updateList }),
+        createElement('input', {
+          id: `hd${list.id}`,
+          className: 'list-input-edit',
+          type: 'text',
+          disabled: 'disabled',
+          value: list.name,
+          onkeydown: updateList
+        }),
         createElement(
           'div',
           {
@@ -107,7 +111,18 @@ function rendertodo (id, todo, lastId) {
         {},
         createElement('input', { type: 'checkbox', name: 'todo-complete' })
       ),
-      createElement('div', {}, createElement('input', { id: `tx${lastId}`, type: 'text', value: todo.name, className: 'task-input', disabled: 'disabled', onkeydown: updateTask })),
+      createElement(
+        'div',
+        {},
+        createElement('input', {
+          id: `tx${lastId}`,
+          type: 'text',
+          value: todo.name,
+          className: 'task-input',
+          disabled: 'disabled',
+          onkeydown: updateTask
+        })
+      ),
       createElement(
         'div',
         { className: 'todo-operations' },
@@ -118,7 +133,12 @@ function rendertodo (id, todo, lastId) {
         createElement('input', {
           id: `in${lastId}`,
           type: 'date',
-          className: 'calendar'
+          min: `${new Date().getFullYear()}-${'0' +
+            String(new Date().getMonth() + 1).slice(
+              -2
+            )}-${new Date().getDate()}`,
+          className: 'calendar',
+          onchange: schedule
         }),
         createElement('i', {
           id: `nt${lastId}`,
@@ -159,11 +179,55 @@ function rendertodo (id, todo, lastId) {
   )
 }
 
+function sortTodo (tasks) {
+  tasks.sort((a, b) => {
+    if (new Date(a.scheduled) <= new Date()) return 1
+    if (new Date(b.scheduled) < new Date()) return -1
+    return new Date(a.scheduled) - new Date(b.scheduled)
+  })
+  tasks.sort((a, b) => {
+    if (a.priority === b.priority) return 1
+    if (a.priority === 'low') return 1
+    if (a.priority === 'high') return -1
+    if (b.priority === 'low') return -1
+    return a.priority - b.priority
+  })
+}
+
+function schedule (event) {
+  const todoContainer = event.target.parentNode.parentNode.parentNode.parentNode
+  const id = todoContainer.id.slice(2)
+  const list = JSON.parse(
+    window.localStorage.getItem(id)
+  )
+  const tasks = list.todo
+  for (const task of tasks) {
+    if (task.id === Number(event.target.id.slice(2))) {
+      task.scheduled = event.target.value
+    }
+  }
+  list.todo = tasks
+  window.localStorage.setItem(
+    id,
+    JSON.stringify(list)
+  )
+  todoContainer.innerHTML = ''
+  sortTodo(tasks)
+  showTaskInput(todoContainer, id)
+  for (const task of tasks) {
+    rendertodo(id, task, task.id)
+  }
+  // main div.innerhtml = ''
+  // Pass to sort fn
+  // send the sored array to render fn
+}
 // for adding tasks
 function addtodo (event) {
   if (event.keyCode === 13) {
     if (event.target.value === '') return
-    const todo = JSON.parse(window.localStorage.getItem(event.target.id.slice(4))).todo
+    const todo = JSON.parse(
+      window.localStorage.getItem(event.target.id.slice(4))
+    ).todo
     let lastId
     if (todo.length === 0) {
       lastId = 1
@@ -184,14 +248,20 @@ function addtodo (event) {
       window.localStorage.getItem(event.target.id.slice(4))
     )
     currentList.todo.push(newTodo)
-    window.localStorage.setItem(event.target.id.slice(4), JSON.stringify(currentList))
+    window.localStorage.setItem(
+      event.target.id.slice(4),
+      JSON.stringify(currentList)
+    )
   }
 }
 
 // for editing task
 function editTask (event) {
-  event.target.parentNode.parentNode.querySelectorAll('input')[1].disabled = false
-  event.target.parentNode.parentNode.querySelectorAll('input')[1].className = 'task-input-edit'
+  event.target.parentNode.parentNode.querySelectorAll(
+    'input'
+  )[1].disabled = false
+  event.target.parentNode.parentNode.querySelectorAll('input')[1].className =
+    'task-input-edit'
 }
 
 function deleteTask (event) {
@@ -279,6 +349,8 @@ function showNote (event) {
 }
 
 function setPriority (event) {
+  const todoContainer = event.target.parentNode.parentNode.parentNode.parentNode
+  const id = todoContainer.id.slice(2)
   if (event.target.value === 'low') {
     event.target.parentNode.parentNode.style.color = 'whitesmoke'
   }
@@ -304,6 +376,35 @@ function setPriority (event) {
     event.target.parentNode.parentNode.parentNode.id.slice(4),
     JSON.stringify(list)
   )
+  sortTodo(tasks)
+  todoContainer.innerHTML = ''
+  showTaskInput(todoContainer, id)
+  for (const task of tasks) {
+    rendertodo(id, task, task.id)
+  }
+}
+
+function showTaskInput (todoContainer, id) {
+  todoContainer.appendChild(
+    createElement(
+      'div',
+      {
+        id: `todo${id}`,
+        className: 'todo'
+      },
+      createElement(
+        'div',
+        {},
+        createElement('input', {
+          id: `inpt${id}`,
+          className: 'todo-input',
+          type: 'text',
+          placeholder: 'Add new todo',
+          onkeydown: addtodo
+        })
+      )
+    )
+  )
 }
 
 function showTask (event) {
@@ -312,29 +413,12 @@ function showTask (event) {
   if (document.getElementById(`todo${id}`) !== null) {
     document.getElementById(`todo${id}`).remove()
   } else {
-    todoContainer.appendChild(
-      createElement(
-        'div',
-        {
-          id: `todo${id}`,
-          className: 'todo'
-        },
-        createElement(
-          'div',
-          {},
-          createElement('input', {
-            id: `inpt${id}`,
-            className: 'todo-input',
-            type: 'text',
-            placeholder: 'Add new todo',
-            onkeydown: addtodo
-          })
-        )
-      )
-    )
-    const todos = JSON.parse(window.localStorage.getItem(id)).todo
-    for (const todo of todos) {
-      rendertodo(id, todo, todo.id)
+    showTaskInput(todoContainer, id)
+    const tasks = JSON.parse(window.localStorage.getItem(id)).todo
+    // Call sort todo fn
+    sortTodo(tasks)
+    for (const task of tasks) {
+      rendertodo(id, task, task.id)
     }
   }
 }
@@ -342,24 +426,31 @@ function showTask (event) {
 showAllList()
 
 addList.addEventListener('click', event => {
-  event.target.parentNode.parentNode.querySelector('input').addEventListener('keydown', (event) => {
-    if (event.keyCode === 13) {
-      if (event.target.value === '') {
-        event.target.parentNode.parentNode.querySelector('input').style.display = 'none'
-        return
+  event.target.parentNode.parentNode
+    .querySelector('input')
+    .addEventListener('keydown', event => {
+      if (event.keyCode === 13) {
+        if (event.target.value === '') {
+          event.target.parentNode.parentNode.querySelector(
+            'input'
+          ).style.display = 'none'
+          return
+        }
+        const newList = {
+          id: !listIds.length ? 1 : listIds[listIds.length - 1] + 1,
+          name: event.target.value,
+          todo: []
+        }
+        event.target.value = ''
+        listIds.push(newList.id)
+        window.localStorage.setItem('listIds', JSON.stringify(listIds))
+        window.localStorage.setItem(newList.id, JSON.stringify(newList))
+        renderList(newList)
+        event.target.parentNode.parentNode.querySelector(
+          'input'
+        ).style.display = 'none'
       }
-      const newList = {
-        id: !listIds.length ? 1 : listIds[listIds.length - 1] + 1,
-        name: event.target.value,
-        todo: []
-      }
-      event.target.value = ''
-      listIds.push(newList.id)
-      window.localStorage.setItem('listIds', JSON.stringify(listIds))
-      window.localStorage.setItem(newList.id, JSON.stringify(newList))
-      renderList(newList)
-      event.target.parentNode.parentNode.querySelector('input').style.display = 'none'
-    }
-  })
-  event.target.parentNode.parentNode.querySelector('input').style.display = 'block'
+    })
+  event.target.parentNode.parentNode.querySelector('input').style.display =
+    'block'
 })
