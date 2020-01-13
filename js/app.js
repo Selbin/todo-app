@@ -133,6 +133,7 @@ function rendertodo (id, todo, lastId) {
         createElement('input', {
           id: `in${lastId}`,
           type: 'date',
+          value: todo.scheduled,
           min: `${new Date().getFullYear()}-${'0' +
             String(new Date().getMonth() + 1).slice(
               -2
