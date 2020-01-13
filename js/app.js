@@ -73,7 +73,7 @@ function renderList (list) {
           className: 'list-header',
           onclick: showTask
         },
-        createElement('input', { id: `hd${list.id}`, className: 'list-input-edit', type: 'text',disabled: 'disabled', value: list.name, onkeydown: updateList }),
+        createElement('input', { id: `hd${list.id}`, className: 'list-input-edit', type: 'text', disabled: 'disabled', value: list.name, onkeydown: updateList }),
         createElement(
           'div',
           {

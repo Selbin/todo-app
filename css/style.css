@@ -11,7 +11,7 @@ body {
     height: 55px;
     background-color: rgb(42, 42, 42);
     align-items: center;
-    justify-content: space-around;
+    justify-content: start;
 }
 
 .btn {
@@ -23,6 +23,7 @@ body {
     font-size: 0.9em;
     cursor: pointer;
     border-radius: 4px;
+    margin: 10px;
 }
 
 button:hover{
@@ -112,6 +113,7 @@ i{
 .inputlist{
     border-width: 0;
     padding: 3px;
+    left: 25%;
     width: 49%;
     display: none;
     position:absolute;
