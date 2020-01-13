@@ -100,8 +100,41 @@ function renderList (list) {
   )
 }
 
+function todoComplete (event) {
+  const parent = event.target.parentNode.parentNode
+  const id = parent.id.slice(4)
+  const todoContainer = event.target.parentNode.parentNode.parentNode.parentNode
+  const containerId = todoContainer.id.slice(2)
+  const list = JSON.parse(
+    window.localStorage.getItem(containerId)
+  )
+  const tasks = list.todo
+  console.log(document.getElementById('tx' + id).style.textDecoration)
+  if (document.getElementById('tx' + id).style.textDecoration === 'none') {
+    document.getElementById('tx' + id).style.textDecoration = 'line-through'
+    for (const task of tasks) {
+      if (task.id === Number(id)) {
+        task.complete = true
+      }
+    }
+  } else {
+    document.getElementById('tx' + id).style.textDecoration = 'none'
+    for (const task of tasks) {
+      if (task.id === Number(id)) {
+        task.complete = false
+      }
+    }
+  }
+  list.todo = tasks
+  window.localStorage.setItem(
+    containerId,
+    JSON.stringify(list)
+  )
+}
 // to render todos
 function rendertodo (id, todo, lastId) {
+  let complete
+  todo.complete ? complete = 'line-through' : complete = 'none'
   document.getElementById('todo' + id).appendChild(
     createElement(
       'div',
@@ -109,7 +142,7 @@ function rendertodo (id, todo, lastId) {
       createElement(
         'div',
         {},
-        createElement('input', { type: 'checkbox', name: 'todo-complete' })
+        createElement('input', { type: 'checkbox', checked: todo.complete, name: 'todo-complete', onclick: todoComplete })
       ),
       createElement(
         'div',
@@ -119,6 +152,7 @@ function rendertodo (id, todo, lastId) {
           type: 'text',
           value: todo.name,
           className: 'task-input',
+          style: `text-decoration: ${complete};`,
           disabled: 'disabled',
           onkeydown: updateTask
         })
@@ -239,6 +273,7 @@ function addtodo (event) {
     const newTodo = {
       id: lastId,
       name: event.target.value,
+      complete: false,
       scheduled: false,
       priority: 0,
       note: ''
