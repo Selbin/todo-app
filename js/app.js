@@ -1,4 +1,5 @@
 const addList = document.getElementById('add-list')
+const search = document.getElementById('search')
 const mainContainer = document.getElementById('app-main-container')
 
 const listIds = window.localStorage.getItem('listIds')
@@ -105,9 +106,7 @@ function todoComplete (event) {
   const id = parent.id.slice(4)
   const todoContainer = event.target.parentNode.parentNode.parentNode.parentNode
   const containerId = todoContainer.id.slice(2)
-  const list = JSON.parse(
-    window.localStorage.getItem(containerId)
-  )
+  const list = JSON.parse(window.localStorage.getItem(containerId))
   const tasks = list.todo
   console.log(document.getElementById('tx' + id).style.textDecoration)
   if (document.getElementById('tx' + id).style.textDecoration === 'none') {
@@ -126,15 +125,12 @@ function todoComplete (event) {
     }
   }
   list.todo = tasks
-  window.localStorage.setItem(
-    containerId,
-    JSON.stringify(list)
-  )
+  window.localStorage.setItem(containerId, JSON.stringify(list))
 }
 // to render todos
 function rendertodo (id, todo, lastId) {
   let complete
-  todo.complete ? complete = 'line-through' : complete = 'none'
+  todo.complete ? (complete = 'line-through') : (complete = 'none')
   document.getElementById('todo' + id).appendChild(
     createElement(
       'div',
@@ -142,7 +138,12 @@ function rendertodo (id, todo, lastId) {
       createElement(
         'div',
         {},
-        createElement('input', { type: 'checkbox', checked: todo.complete, name: 'todo-complete', onclick: todoComplete })
+        createElement('input', {
+          type: 'checkbox',
+          checked: todo.complete,
+          name: 'todo-complete',
+          onclick: todoComplete
+        })
       ),
       createElement(
         'div',
@@ -216,7 +217,7 @@ function rendertodo (id, todo, lastId) {
 
 function sortTodo (tasks) {
   tasks.sort((a, b) => {
-    if (new Date(a.scheduled) <= new Date()) return 1
+    if (new Date(a.scheduled) < new Date()) return 1
     if (new Date(b.scheduled) < new Date()) return -1
     return new Date(a.scheduled) - new Date(b.scheduled)
   })
@@ -232,9 +233,7 @@ function sortTodo (tasks) {
 function schedule (event) {
   const todoContainer = event.target.parentNode.parentNode.parentNode.parentNode
   const id = todoContainer.id.slice(2)
-  const list = JSON.parse(
-    window.localStorage.getItem(id)
-  )
+  const list = JSON.parse(window.localStorage.getItem(id))
   const tasks = list.todo
   for (const task of tasks) {
     if (task.id === Number(event.target.id.slice(2))) {
@@ -242,10 +241,7 @@ function schedule (event) {
     }
   }
   list.todo = tasks
-  window.localStorage.setItem(
-    id,
-    JSON.stringify(list)
-  )
+  window.localStorage.setItem(id, JSON.stringify(list))
   todoContainer.innerHTML = ''
   sortTodo(tasks)
   showTaskInput(todoContainer, id)
@@ -275,7 +271,7 @@ function addtodo (event) {
       name: event.target.value,
       complete: false,
       scheduled: false,
-      priority: 0,
+      priority: 'low',
       note: ''
     }
     rendertodo(event.target.id.slice(4), newTodo, lastId)
@@ -489,4 +485,31 @@ addList.addEventListener('click', event => {
     })
   event.target.parentNode.parentNode.querySelector('input').style.display =
     'block'
+})
+
+search.addEventListener('click', event => {
+  if (document.getElementById('list-search').style.display === 'block') {
+    document.getElementById('list-search').style.display = 'none'
+  } else {
+    document.getElementById('list-search').style.display = 'block'
+    document.getElementById('list-search').oninput = event => {
+      const listIds = window.localStorage.getItem('listIds')
+        ? JSON.parse(window.localStorage.getItem('listIds'))
+        : []
+      const regex = new RegExp(`^${event.target.value}.+`)
+      mainContainer.innerHTML = ''
+      if (event.target.value === '') {
+        for (const listId of listIds) {
+          renderList(JSON.parse(window.localStorage.getItem(listId)))
+        }
+        return
+      }
+      for (const id of listIds) {
+        if (regex.test(JSON.parse(window.localStorage.getItem(id)).name)) {
+          mainContainer.innerHTML = ''
+          renderList(JSON.parse(window.localStorage.getItem(id)))
+        }
+      }
+    }
+  }
 })
